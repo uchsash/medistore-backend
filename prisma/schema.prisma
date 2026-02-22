@@ -30,7 +30,7 @@ model Medicine {
   categoryId   String
   category     Category    @relation(fields: [categoryId], references: [id])
   sellerId     String
-  seller       User       @relation(fields: [sellerId], references: [id])
+  seller       User        @relation(fields: [sellerId], references: [id])
   orderItems   OrderItem[]
   reviews      Review[]
   createdAt    DateTime    @default(now())
@@ -54,7 +54,7 @@ enum OrderStatus {
 model Order {
   id              String      @id @default(uuid())
   customerId      String
-  // customer        User        @relation(fields: [customerId], references: [id])
+  customer        User        @relation(fields: [customerId], references: [id])
   totalAmount     Float
   shippingAddress String
   status          OrderStatus @default(PENDING)
@@ -78,7 +78,7 @@ model OrderItem {
 
 model Review {
   id         String   @id @default(uuid())
-  rating     Int // 1 to 5
+  rating     Int
   comment    String?
   userId     String
   user       User     @relation(fields: [userId], references: [id])
@@ -99,7 +99,12 @@ model User {
   accounts      Account[]
 
   medicines Medicine[]
-  reviews Review[]
+  reviews   Review[]
+  orders    Order[]
+
+  role   String  @default("CUSTOMER")
+  phone  String?
+  status String  @default("ACTIVE")
 
   @@unique([email])
   @@map("user")
