@@ -4,7 +4,7 @@ import { categoryService } from "./category.service";
 
 const createCategory = async (req: Request, res: Response) => {
     try {
-        const result = await categoryService.createCategoryInService();
+        const result = await categoryService.createCategoryInService(req.body.name);
         res.status(201).json(result);
     }
     catch (error) {
