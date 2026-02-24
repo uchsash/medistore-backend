@@ -11,4 +11,9 @@ router.post(
     medicineController.createMedicine
 );
 
+router.get(
+    "/",
+    medicineController.getAllMedicine
+);
+
 export const medicineRouter: Router = router;

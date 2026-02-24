@@ -15,10 +15,9 @@ app.use(cors({
 
 app.use(express.json());
 
-app.all('/api/auth/*splat', toNodeHandler(auth));
-
-
 app.use("/api", router);
+
+app.all('/api/auth/*splat', toNodeHandler(auth));
 
 app.get("/", (req, res) => {
     res.send("Hello, Medistore!");
