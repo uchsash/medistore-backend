@@ -40,7 +40,7 @@ const getAllMedicine = async (req: Request, res: Response) => {
         const categoryId = req.query.categoryId as string | undefined;
 
         //Main Logic
-        const result = await medicineService.getAllMedicineInService({search: searchString, page, limit, skip, finalSortBy, sortOrder, sellerId, categoryId});
+        const result = await medicineService.getAllMedicineInService({ search: searchString, page, limit, skip, finalSortBy, sortOrder, sellerId, categoryId });
         res.status(200).json(result);
     }
     catch (err) {
@@ -51,8 +51,66 @@ const getAllMedicine = async (req: Request, res: Response) => {
     }
 }
 
+const getMyMedicine = async (req: Request, res: Response) => {
+    try {
+
+        const currentSellerId = req.user?.id;
+
+        if (!currentSellerId) {
+            throw new Error("You must be logged in to view your added medicines.");
+        }
+
+        //Search
+        const { search } = req.query;
+        const searchString = typeof search === 'string' ? search : undefined;
+
+        //Sort
+        const { page, limit, skip, sortBy, sortOrder } = paginationAndSortingHelper(req.query);
+        const allowedSortFields = ['name', 'price', 'manufacturer', 'stock', 'createdAt'];
+        const finalSortBy = allowedSortFields.includes(sortBy as string) ? sortBy : "createdAt";
+
+        //Filter by Category
+        const categoryId = req.query.categoryId as string | undefined;
+
+        //Main Logic
+        const result = await medicineService.getAllMedicineInService({ search: searchString, page, limit, skip, finalSortBy, sortOrder, sellerId: currentSellerId, categoryId });
+        res.status(200).json(result);
+    }
+    catch (err) {
+        res.status(400).json({
+            error: "Medicine retrival failed",
+            details: err instanceof Error ? err.message : err
+        })
+    }
+}
+
+const getMedicineById = async (req: Request, res: Response) => {
+    try {
+        const { medId } = req.params;
+
+        if (!medId) {
+            throw new Error("Medicine Id is required!");
+        }
+
+        const result = await medicineService.getMedicineByIdInService(medId as string);
+        res.status(200).json({
+            success: true,
+            message: "Medicine retrieved successfully!",
+            data: result
+        });
+    }
+    catch (err) {
+        res.status(400).json({
+            error: "Medicine retrive by Id failed",
+            details: err
+        })
+    }
+}
+
 export const medicineController = {
     createMedicine,
-    getAllMedicine
+    getAllMedicine,
+    getMyMedicine,
+    getMedicineById
 
 }

@@ -28,7 +28,7 @@ const getAllMedicineInService = async ({
     limit: number,
     skip: number,
     finalSortBy: string,
-    sortOrder: 'asc' | 'desc',
+    sortOrder: string,
     sellerId: string | undefined,
     categoryId: string | undefined
 }) => {
@@ -96,7 +96,7 @@ const getAllMedicineInService = async ({
             AND: andConditions
         }
     });
-
+    
     return {
         data: result,
         pagination: {
@@ -109,7 +109,27 @@ const getAllMedicineInService = async ({
 
 }
 
+const getMedicineByIdInService = async(medId: string) => {
+    return await prisma.medicine.findUniqueOrThrow({
+        where: {
+            id: medId
+        },
+        include: {
+            category: true,
+            _count: {
+                select: {
+                    reviews: true
+                }
+            }
+        }
+    });
+
+}
+
+
+
 export const medicineService = {
     createMedicineInService,
-    getAllMedicineInService
+    getAllMedicineInService,
+    getMedicineByIdInService
 }

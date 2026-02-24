@@ -16,4 +16,15 @@ router.get(
     medicineController.getAllMedicine
 );
 
+router.get(
+    "/my-medicine",
+    auth(UserRole.SELLER),
+    medicineController.getMyMedicine
+);
+
+router.get(
+    "/:medId",
+    medicineController.getMedicineById
+);
+
 export const medicineRouter: Router = router;
