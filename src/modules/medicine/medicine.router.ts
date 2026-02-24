@@ -27,4 +27,16 @@ router.get(
     medicineController.getMedicineById
 );
 
+router.patch(
+    "/:medId",
+    auth(UserRole.SELLER, UserRole.ADMIN),
+    medicineController.updateMedicine
+);
+
+router.delete(
+    "/:medId",
+    auth(UserRole.SELLER, UserRole.ADMIN),
+    medicineController.deleteMedicine
+);
+
 export const medicineRouter: Router = router;

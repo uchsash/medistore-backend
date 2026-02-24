@@ -82,7 +82,11 @@ const getAllMedicineInService = async ({
             [finalSortBy]: sortOrder
         },
         include: {
-            category: true,
+            category: {
+                select: {
+                    name: true
+                }
+            },
             _count: {
                 select: {
                     reviews: true
@@ -126,10 +130,65 @@ const getMedicineByIdInService = async(medId: string) => {
 
 }
 
+const updateMedicineInService = async (medId: string, sellerId: string, sellerRole: string, updateData: any) => {
+    
+    const medicine = await prisma.medicine.findUniqueOrThrow({
+        where: {
+            id: medId
+        }
+    });
+
+    if (sellerRole !== 'ADMIN' && medicine.sellerId !== sellerId) {
+        throw new Error("You do not have permission to update this medicine.");
+    }
+
+    if (updateData.categoryId) {
+       await prisma.category.findUniqueOrThrow({
+            where: {
+                id: updateData.categoryId
+            }
+        });
+    }
+
+    const result = await prisma.medicine.update({
+        where: {
+             id: medId 
+        },
+        data: updateData,
+        include: {
+            category: true
+        }
+    });
+
+    return result;
+};
+
+const deleteMedicineInService = async (medId: string, sellerId: string, sellerRole: string) => {
+
+    const medicine = await prisma.medicine.findUniqueOrThrow({
+        where: {
+            id: medId
+        }
+    });
+
+    if (sellerRole !== 'ADMIN' && medicine.sellerId !== sellerId) {
+        throw new Error("You do not have permission to delete this medicine.");
+    }
+
+    const result = await prisma.medicine.delete({
+        where: {
+             id: medId 
+        }
+    });
+
+    return result;
+};
 
 
 export const medicineService = {
     createMedicineInService,
     getAllMedicineInService,
-    getMedicineByIdInService
+    getMedicineByIdInService,
+    updateMedicineInService,
+    deleteMedicineInService
 }

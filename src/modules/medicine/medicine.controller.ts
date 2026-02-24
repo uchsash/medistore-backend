@@ -107,10 +107,64 @@ const getMedicineById = async (req: Request, res: Response) => {
     }
 }
 
+const updateMedicine = async (req: Request, res: Response) => {
+    try {
+        const { medId } = req.params;
+        const currentSellerId = req.user?.id;
+        const currentSellerRole = req.user?.role;
+
+        if (!currentSellerId || !currentSellerRole) {
+            throw new Error("You must be logged in to update medicine.");
+        }
+
+        const result = await medicineService.updateMedicineInService(medId as string, currentSellerId, currentSellerRole, req.body);
+
+        res.status(200).json({
+            success: true,
+            message: "Medicine updated successfully!",
+            data: result
+        });
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            message: "Medicine update failed.",
+            details: error
+        });
+    }
+};
+
+const deleteMedicine = async (req: Request, res: Response) => {
+    try {
+        const { medId } = req.params;
+        const currentSellerId = req.user?.id;
+        const currentSellerRole = req.user?.role;
+
+        if (!currentSellerId || !currentSellerRole) {
+            throw new Error("You must be logged in to delete medicine.");
+        }
+
+        const result = await medicineService.deleteMedicineInService(medId as string, currentSellerId, currentSellerRole);
+
+        res.status(200).json({
+            success: true,
+            message: "Medicine deleted successfully!",
+            data: result
+        });
+    } catch (error: any) {
+        res.status(400).json({
+            success: false,
+            message: "Medicine deletion failed.",
+            details: error.message || error
+        });
+    }
+};
+
+
 export const medicineController = {
     createMedicine,
     getAllMedicine,
     getMyMedicine,
-    getMedicineById
-
+    getMedicineById,
+    updateMedicine,
+    deleteMedicine
 }
