@@ -12,4 +12,27 @@ router.post(
     categoryController.createCategory
 );
 
+router.get(
+    "/",
+    categoryController.getAllCategory
+)
+
+router.get(
+    "/:catId",
+    categoryController.getCategoryById
+)
+
+router.patch(
+    "/:catId",
+    auth(UserRole.ADMIN),
+    categoryController.updateCategory
+)
+
+router.delete(
+    "/:catId",
+    auth(UserRole.ADMIN),
+    categoryController.deleteCategory
+
+)
+
 export const categoryRouter: Router = router;
