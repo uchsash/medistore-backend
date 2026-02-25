@@ -2,6 +2,7 @@ import { Router } from "express";
 import { medicineRouter } from "../modules/medicine/medicine.router";
 import { categoryRouter } from "../modules/category/category.router";
 import { orderRouter } from "../modules/order/order.router";
+import { userRouter } from "../modules/user/user.router";
 
 const router = Router();
 
@@ -18,6 +19,10 @@ const routerManager = [
         path: "/orders",
         route: orderRouter,
     },
+    {
+    path: "/users",
+    route: userRouter,
+},
 ];
 
 routerManager.forEach((r) => router.use(r.path, r.route));

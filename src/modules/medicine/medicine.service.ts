@@ -91,6 +91,11 @@ const getAllMedicineInService = async ({
                 select: {
                     reviews: true
                 }
+            },
+            reviews: {
+                select: {
+                    rating: true
+                }
             }
         }
     });
@@ -120,6 +125,25 @@ const getMedicineByIdInService = async(medId: string) => {
         },
         include: {
             category: true,
+            reviews: {
+                where: {
+                    status: 'PUBLISHED'
+                },
+                select: {
+                    id: true,
+                    rating: true,
+                    comment: true,
+                    createdAt: true,
+                    user: {
+                        select: {
+                            name: true
+                        }
+                    }
+                },
+                orderBy: {
+                    createdAt: 'desc'
+                }
+            },
             _count: {
                 select: {
                     reviews: true

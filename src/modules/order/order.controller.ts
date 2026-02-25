@@ -73,8 +73,80 @@ const getOrderById = async (req: Request, res: Response) => {
     }
 };
 
+const getSellerOrders = async (req: Request, res: Response) => {
+    try {
+        const sellerId = req.user?.id;
+        if (!sellerId) throw new Error("Unauthorized access.");
+
+        const result = await orderService.getSellerOrdersInService(sellerId);
+
+        res.status(200).json({
+            success: true,
+            message: "Seller orders retrieved successfully!",
+            data: result
+        });
+    } catch (error: any) {
+        res.status(400).json({
+            success: false,
+            message: "Failed to fetch incoming orders.",
+            details: error.message
+        });
+    }
+};
+
+const updateOrderStatus = async (req: Request, res: Response) => {
+    try {
+        const { orderId } = req.params;
+        const { status } = req.body;
+        const userId = req.user?.id;
+        const userRole = req.user?.role;
+
+        if (!userId || !userRole){
+            throw new Error("Unauthorized");
+        }
+        if(!orderId){
+            throw new Error("Order doesn't exists.");
+        }
+
+        const result = await orderService.updateOrderStatusInService(orderId as string, status, userId, userRole);
+
+        res.status(200).json({
+            success: true,
+            message: `Order status updated to ${status} successfully!`,
+            data: result
+        });
+    } catch (error: any) {
+        res.status(400).json({
+            success: false,
+            message: "Order status update failed.",
+            details: error.message
+        });
+    }
+};
+
+const getAllOrdersForAdmin = async (req: Request, res: Response) => {
+    try {
+        const result = await orderService.getAllOrdersForAdminInService();
+
+        res.status(200).json({
+            success: true,
+            message: "All the orders retrieved successfully!",
+            data: result
+        });
+    } catch (error: any) {
+        res.status(400).json({
+            success: false,
+            message: "Failed to fetch all the orders.",
+            details: error.message
+        });
+    }
+};
+
 export const orderController = {
     createOrder,
     getMyOrders,
-    getOrderById
+    getOrderById,
+    getSellerOrders,
+    updateOrderStatus,
+    getAllOrdersForAdmin
 }
