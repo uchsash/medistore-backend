@@ -24,6 +24,23 @@ const createReview = async (req: Request, res: Response) => {
     }
 };
 
+const getAllReviews = async (req: Request, res: Response) => {
+  try {
+    const result = await reviewServices.getAllReviewsInService();
+    res.status(200).json({
+      success: true,
+      message: "Reviews retrieved successfully!",
+      data: result,
+    });
+  } catch (error: any) {
+    res.status(400).json({
+      success: false,
+      message: "Review retrieval failed",
+      details: error.message,
+    });
+  }
+};
+
 const updateReviewStatus = async (req: Request, res: Response) => {
     try {
         const { reviewId } = req.params;
@@ -68,6 +85,7 @@ const deleteReview = async (req: Request, res: Response) => {
 export const reviewController = {
     createReview,
     updateReviewStatus,
-    deleteReview
+    deleteReview,
+    getAllReviews
 
 }

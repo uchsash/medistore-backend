@@ -13,7 +13,9 @@ const getMyProfileInService = async (userId: string) => {
             role: true,
             status: true,
             createdAt: true,
-            updatedAt: true
+            updatedAt: true,
+            phone: true,
+            image: true
         }
     });
 };
@@ -42,7 +44,9 @@ const getAllUsersInService = async () => {
             email: true,
             role: true,
             status: true,
-            createdAt: true
+            phone: true,
+            image: true,
+            createdAt: true,
         },
         orderBy: { createdAt: 'desc' }
     });

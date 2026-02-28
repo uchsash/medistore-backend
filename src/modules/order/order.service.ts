@@ -169,7 +169,7 @@ const getSellerOrdersInService = async (sellerId: string) => {
 };
 
 const updateOrderStatusInService = async (orderId: string, newStatus: OrderStatus, userId: string, userRole: string) => {
-    
+
     const order = await prisma.order.findUniqueOrThrow({
         where: {
             id: orderId
@@ -191,6 +191,10 @@ const updateOrderStatusInService = async (orderId: string, newStatus: OrderStatu
 
         if (newStatus !== 'CANCELLED') {
             throw new Error("You can only cancel orders.");
+        }
+
+        if (order.status !== "PENDING") {
+            throw new Error("You can only cancel an order while it is PENDING.");
         }
     }
 

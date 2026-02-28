@@ -5,6 +5,12 @@ import { reviewController } from './review.controller';
 
 const router = express.Router();
 
+router.get(
+  "/",
+  auth(UserRole.ADMIN),
+  reviewController.getAllReviews
+);
+
 router.post(
     "/",
     auth(UserRole.CUSTOMER),

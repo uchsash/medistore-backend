@@ -29,6 +29,29 @@ const createReviewInService = async (userId: string, payload: { medicineId: stri
     });
 };
 
+const getAllReviewsInService = async () => {
+    return await prisma.review.findMany({
+        orderBy: {
+            createdAt: "desc"
+        },
+        include: {
+            user: {
+                select: {
+                    id: true,
+                    name: true,
+                    email: true
+                }
+            },
+            medicine: {
+                select: {
+                    id: true,
+                    name: true
+                }
+            },
+        },
+    });
+};
+
 
 const updateReviewStatusInService = async (reviewId: string, newStatus: "PUBLISHED" | "UNPUBLISHED") => {
     const existingReview = await prisma.review.findUniqueOrThrow({
@@ -63,5 +86,6 @@ const deleteReviewInService = async (reviewId: string) => {
 export const reviewServices = {
     createReviewInService,
     updateReviewStatusInService,
-    deleteReviewInService
+    deleteReviewInService,
+    getAllReviewsInService
 }
